@@ -12,37 +12,71 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #e8f0fe 0%, #f3f6fb 50%, #eef4ff 100%);
         }
 
         .clarity-text {
             font-size: 48px;
             font-weight: bold;
-            color: #333;
+            color: #667eea;
             margin: 40px 0;
             opacity: 0.1;
             filter: blur(5px);
             transition: all 0.5s ease-in-out;
             letter-spacing: 3px;
+            text-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
         }
 
         .clarity-button {
-            background: #667eea;
-            color: white;
+            width: 100px;
+            height: 100px;
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
             border: none;
-            padding: 15px 30px;
-            font-size: 16px;
-            border-radius: 8px;
+            border-radius: 50%;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            box-shadow: 
+                0 8px 32px rgba(102, 126, 234, 0.25),
+                inset 0 4px 8px rgba(255, 255, 255, 0.4),
+                inset 0 -4px 8px rgba(102, 126, 234, 0.1);
+            border: 1.5px solid rgba(255, 255, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .clarity-button::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.1) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.8;
         }
 
         .clarity-button:hover {
-            background: #5a6fd8;
+            background: rgba(102, 126, 234, 0.3);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 
+                0 16px 60px rgba(102, 126, 234, 0.35),
+                inset 0 6px 12px rgba(255, 255, 255, 0.5),
+                inset 0 -6px 12px rgba(102, 126, 234, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.5);
         }
 
         .clarity-button:active {
-            transform: scale(0.98);
+            transform: translateY(-2px) scale(0.98);
+            box-shadow: 
+                0 8px 24px rgba(102, 126, 234, 0.3),
+                inset 0 6px 16px rgba(102, 126, 234, 0.2),
+                inset 0 2px 6px rgba(255, 255, 255, 0.4);
+            transition-duration: 0.1s;
         }
 
         /* 清晰度等級 */
@@ -64,134 +98,37 @@
     </div>
 
     <button class="clarity-button" id="clarityButton" onclick="improveClarity()">
-        點擊
+       
     </button>
 
     <script>
         let clickCount = 0;
         let clarityLevel = 0;
         const maxLevel = 10;
-        const clicksPerLevel = 3; // 每3次點擊提升一個等級
+        const clicksPerLevel = 3;
 
         function improveClarity() {
             clickCount++;
             
-            // 計算新的清晰度等級
             const newLevel = Math.min(Math.floor(clickCount / clicksPerLevel), maxLevel);
             
             if (newLevel > clarityLevel) {
                 clarityLevel = newLevel;
                 updateClarityDisplay();
-                
-                // 如果達到最高等級，播放慶祝動畫
-                if (clarityLevel === maxLevel) {
-                    celebrateVictory();
-                }
             }
-
-            // 更新統計數據
-            updateStats();
-            
-            // 按鈕動畫
-            animateButton();
         }
 
         function updateClarityDisplay() {
             const textElement = document.getElementById('clarityText');
             
-            // 移除所有清晰度等級類
             for (let i = 1; i <= maxLevel; i++) {
                 textElement.classList.remove(`clarity-level-${i}`);
             }
             
-            // 添加當前等級類
             if (clarityLevel > 0) {
                 textElement.classList.add(`clarity-level-${clarityLevel}`);
             }
         }
-
-        function updateStats() {
-            document.getElementById('clickCount').textContent = clickCount;
-            document.getElementById('clarityLevel').textContent = clarityLevel;
-            
-            const progress = Math.min((clarityLevel / maxLevel) * 100, 100);
-            document.getElementById('progressPercent').textContent = Math.round(progress) + '%';
-            document.getElementById('progressFill').style.width = progress + '%';
-        }
-
-        function animateButton() {
-            const button = document.getElementById('clarityButton');
-            button.style.transform = 'scale(0.95)';
-            
-            setTimeout(() => {
-                button.style.transform = 'scale(1)';
-            }, 100);
-        }
-
-        function celebrateVictory() {
-            const container = document.querySelector('.container');
-            const textElement = document.getElementById('clarityText');
-            const button = document.getElementById('clarityButton');
-            
-            // 播放慶祝動畫
-            container.classList.add('victory-animation');
-            
-            // 更改按鈕文字
-            button.innerHTML = '🎉 恭喜完成！';
-            button.style.background = 'linear-gradient(45deg, #28a745, #20c997)';
-            
-            // 顯示完成訊息
-            setTimeout(() => {
-                alert('🎊 恭喜！您已經讓數字完全清晰了！\n總共點擊了 ' + clickCount + ' 次');
-                container.classList.remove('victory-animation');
-            }, 1000);
-        }
-
-        function resetClarity() {
-            clickCount = 0;
-            clarityLevel = 0;
-            
-            const textElement = document.getElementById('clarityText');
-            const button = document.getElementById('clarityButton');
-            
-            // 移除所有清晰度等級類
-            for (let i = 1; i <= maxLevel; i++) {
-                textElement.classList.remove(`clarity-level-${i}`);
-            }
-            
-            // 重置按鈕
-            button.innerHTML = '✨ 提升清晰度';
-            button.style.background = 'linear-gradient(45deg, #667eea, #764ba2)';
-            
-            // 重置統計
-            updateStats();
-            
-            // 顯示重置訊息
-            setTimeout(() => {
-                alert('🔄 已重置！重新開始挑戰吧！');
-            }, 100);
-        }
-
-        // 鍵盤支援
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter' || event.key === ' ') {
-                improveClarity();
-                event.preventDefault();
-            } else if (event.key === 'r' || event.key === 'R') {
-                resetClarity();
-                event.preventDefault();
-            }
-        });
-
-        // 初始化
-        window.onload = function() {
-            updateStats();
-            
-            // 顯示歡迎訊息
-            setTimeout(() => {
-                alert('🎯 歡迎來到清晰度挑戰！\n\n目標：點擊按鈕讓模糊的數字變清晰\n每 ' + clicksPerLevel + ' 次點擊提升一個等級\n快捷鍵：Enter/空格 - 點擊，R - 重置');
-            }, 500);
-        };
     </script>
 </body>
 </html>
